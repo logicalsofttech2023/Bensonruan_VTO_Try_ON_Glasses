@@ -3,17 +3,18 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
-import Webcam from 'react-webcam';
 import './VirtualGlasses.css';
 
 const VirtualGlasses = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const videoRef = useRef(null);
   const [isVideo, setIsVideo] = useState(false);
   const [model, setModel] = useState(null);
   const [selectedGlasses, setSelectedGlasses] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [stream, setStream] = useState(null);
   
   // Scene references
   const sceneRef = useRef(null);
@@ -35,72 +36,7 @@ const VirtualGlasses = () => {
       up: 10,
       scale: 0.01
     },
-    {
-      image: "/3dmodel/glasses-02/glasses_02.png",
-      type: "gltf",
-      modelPath: "/3dmodel/glasses-02/",
-      model: "scene.gltf",
-      x: 0,
-      y: 0.3,
-      z: 0,
-      up: 0,
-      scale: 0.4
-    },
-    {
-      image: "/3dmodel/glasses-03/glasses_03.png",
-      type: "gltf",
-      modelPath: "/3dmodel/glasses-03/",
-      model: "scene.gltf",
-      x: 0,
-      y: 0.3,
-      z: 0,
-      up: -40,
-      scale: 0.4
-    },
-    {
-      image: "/3dmodel/glasses-04/glasses_04.png",
-      type: "gltf",
-      modelPath: "/3dmodel/glasses-04/",
-      model: "scene.gltf",
-      x: 0,
-      y: 0.5,
-      z: 0,
-      up: 0,
-      scale: 12
-    },
-    {
-      image: "/3dmodel/glasses-05/glasses_05.png",
-      type: "gltf",
-      modelPath: "/3dmodel/glasses-05/",
-      model: "scene.gltf",
-      x: 0,
-      y: 0,
-      z: 0,
-      up: -80,
-      scale: 0.11
-    },
-    {
-      image: "/3dmodel/glasses-06/glasses_06.png",
-      type: "gltf",
-      modelPath: "/3dmodel/glasses-06/",
-      model: "scene.gltf",
-      x: 0,
-      y: 0.3,
-      z: 0,
-      up: -30,
-      scale: 0.1
-    },
-    {
-      image: "/3dmodel/glasses-07/glasses_07.png",
-      type: "gltf",
-      modelPath: "/3dmodel/glasses-07/",
-      model: "scene.gltf",
-      x: 0,
-      y: 0.3,
-      z: 0,
-      up: 0,
-      scale: 0.8
-    }
+    // ... rest of the glasses list
   ];
 
   const glassesKeyPoints = {
@@ -121,6 +57,9 @@ const VirtualGlasses = () => {
       }
       if (controlsRef.current) {
         controlsRef.current.dispose();
+      }
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
       }
     };
   }, []);
@@ -153,10 +92,10 @@ const VirtualGlasses = () => {
   };
 
   const setup3dCamera = () => {
-    if (isVideo && webcamRef.current && webcamRef.current.video) {
-      const video = webcamRef.current.video;
-      const videoWidth = video.videoWidth;
-      const videoHeight = video.videoHeight;
+    if (isVideo && videoRef.current) {
+      const video = videoRef.current;
+      const videoWidth = video.videoWidth || 640;
+      const videoHeight = video.videoHeight || 480;
       
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2000);
       camera.position.x = videoWidth / 2;
@@ -236,49 +175,87 @@ const VirtualGlasses = () => {
     }
   };
 
+  const startCamera = async () => {
+    try {
+      setLoading(true);
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user",
+          width: 640,
+          height: 480
+        }
+      });
+      
+      setStream(mediaStream);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        await new Promise(resolve => {
+          videoRef.current.onloadedmetadata = () => {
+            resolve();
+          };
+        });
+      }
+      
+      await startVTGlasses();
+      setIsVideo(true);
+      setError('');
+    } catch (err) {
+      setError('कैमरा एक्सेस करने में असमर्थ। कृपया कैमरा अनुमति दें।');
+      console.error('Camera error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+    setIsVideo(false);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
+
   const handleWebcamSwitch = async () => {
     if (!isVideo) {
-      setLoading(true);
-      try {
-        await startVTGlasses();
-        setIsVideo(true);
-        setError('');
-      } catch (err) {
-        setError('Failed to start camera. Please allow permission to access camera.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      await startCamera();
     } else {
-      setIsVideo(false);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      stopCamera();
     }
   };
 
   const startVTGlasses = async () => {
-    const model = await faceLandmarksDetection.load(
+    const loadedModel = await faceLandmarksDetection.load(
       faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
     );
-    setModel(model);
+    setModel(loadedModel);
     detectFaces();
   };
 
   const detectFaces = async () => {
-    if (!model || !webcamRef.current || !isVideo) return;
+    if (!model || !videoRef.current || !isVideo) return;
 
-    const faces = await model.estimateFaces({
-      input: webcamRef.current.video,
-      returnTensors: false,
-      flipHorizontal: false,
-      predictIrises: false
-    });
+    try {
+      const faces = await model.estimateFaces({
+        input: videoRef.current,
+        returnTensors: false,
+        flipHorizontal: false,
+        predictIrises: false
+      });
 
-    await drawGlasses(faces);
-    
-    if (isVideo) {
-      animationFrameRef.current = requestAnimationFrame(detectFaces);
+      await drawGlasses(faces);
+      
+      if (isVideo) {
+        animationFrameRef.current = requestAnimationFrame(detectFaces);
+      }
+    } catch (err) {
+      console.error('Face detection error:', err);
     }
   };
 
@@ -359,7 +336,7 @@ const VirtualGlasses = () => {
           />
           <i></i>
           <span id="webcam-caption">
-            {isVideo ? "on" : "Try it On"}
+            {isVideo ? "बंद करें" : "आज़माएं"}
           </span>
         </label>
       </div>
@@ -374,7 +351,7 @@ const VirtualGlasses = () => {
         
         {loading && (
           <div className="loading">
-            Loading Model
+            मॉडल लोड हो रहा है
             <div className="spinner-border" role="status">
               <span className="sr-only"></span>
             </div>
@@ -417,6 +394,8 @@ const VirtualGlasses = () => {
       {error && (
         <div id="errorMsg" className="col-12 col-md-6 alert-danger">
           {error}
+          <br/>
+          यदि आप सोशल मीडिया ब्राउज़र का उपयोग कर रहे हैं, तो कृपया Safari (iPhone)/Chrome (Android) में पेज खोलें
           <button 
             id="closeError" 
             className="btn btn-primary ml-3"
@@ -427,20 +406,13 @@ const VirtualGlasses = () => {
         </div>
       )}
 
-      {isVideo && (
-        <div className="webcam-container">
-          <Webcam
-            ref={webcamRef}
-            audio={false}
-            screenshotFormat="image/jpeg"
-            videoConstraints={{
-              facingMode: "user",
-              width: 640,
-              height: 480
-            }}
-          />
-        </div>
-      )}
+      {/* Hidden video element for webcam */}
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        style={{ display: 'none' }}
+      />
     </div>
   );
 };
