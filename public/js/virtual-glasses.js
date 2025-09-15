@@ -1,6 +1,9 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
-import {OrbitControls} from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
-import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+// import * as THREE from '../node_modules/three/build/three.module.js';
+// import {OrbitControls} from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
+// import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const webcamElement = document.getElementById('webcam');
 const canvasElement = document.getElementById('canvas');
