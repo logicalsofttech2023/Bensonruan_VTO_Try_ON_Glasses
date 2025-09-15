@@ -438,7 +438,6 @@ const VirtualGlasses = () => {
               width: 640,
               height: 480
             }}
-            style={{ display: 'none' }} // Hide the webcam element as we're using canvas
           />
         </div>
       )}
