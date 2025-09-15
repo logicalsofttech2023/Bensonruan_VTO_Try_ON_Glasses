@@ -19,7 +19,7 @@
       rel="stylesheet"
       type="text/css"
       media="screen"
-      href="./public/style/virtual-glasses.css"
+      href="/style/virtual-glasses.css"
     />
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-core@2.4.0/dist/tf-core.min.js"></script>
@@ -31,7 +31,7 @@
       type="text/javascript"
       src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"
     ></script>
-    <script type="text/javascript" src="./public/js/webcam-ui-lib.js"></script>
+    <script type="text/javascript" src="/js/webcam-ui-lib.js"></script>
   </head>
   <body>
     <!-- <div id="root"></div> -->
@@ -54,12 +54,12 @@
         </div>
 
         <div id="glasses-slider">
-          <img id="arrowLeft" src="./public/images/arrow-left.png" />
+          <img id="arrowLeft" src="/images/arrow-left.png" />
           <div id="glasses-list">
             <ul>
               <li class="selected-glasses">
                 <img
-                  src="./public/3dmodel/glasses-01/glasses_01.png"
+                  src="/3dmodel/glasses-01/glasses_01.png"
                   data-3d-type="gltf"
                   data-3d-model-path="3dmodel/glasses-01/"
                   data-3d-model="scene.gltf"
@@ -72,9 +72,9 @@
               </li>
               <li>
                 <img
-                  src="./public/3dmodel/glasses-02/glasses_02.png"
+                  src="/3dmodel/glasses-02/glasses_02.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="./public/3dmodel/glasses-02/"
+                  data-3d-model-path="/3dmodel/glasses-02/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0.3"
@@ -85,9 +85,9 @@
               </li>
               <li>
                 <img
-                  src="./public/3dmodel/glasses-03/glasses_03.png"
+                  src="/3dmodel/glasses-03/glasses_03.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="./public/3dmodel/glasses-03/"
+                  data-3d-model-path="/3dmodel/glasses-03/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0.3"
@@ -98,9 +98,9 @@
               </li>
               <li>
                 <img
-                  src="./public/3dmodel/glasses-04/glasses_04.png"
+                  src="/3dmodel/glasses-04/glasses_04.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="./public/3dmodel/glasses-04/"
+                  data-3d-model-path="/3dmodel/glasses-04/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0.5"
@@ -111,9 +111,9 @@
               </li>
               <li>
                 <img
-                  src="./public/3dmodel/glasses-05/glasses_05.png"
+                  src="/3dmodel/glasses-05/glasses_05.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="./public/3dmodel/glasses-05/"
+                  data-3d-model-path="/3dmodel/glasses-05/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0"
@@ -124,9 +124,9 @@
               </li>
               <li>
                 <img
-                  src="./public/3dmodel/glasses-06/glasses_06.png"
+                  src="/3dmodel/glasses-06/glasses_06.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="./public/3dmodel/glasses-06/"
+                  data-3d-model-path="/3dmodel/glasses-06/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0.3"
@@ -137,9 +137,9 @@
               </li>
               <li>
                 <img
-                  src="./public/3dmodel/glasses-07/glasses_07.png"
+                  src="/3dmodel/glasses-07/glasses_07.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="./public/3dmodel/glasses-07/"
+                  data-3d-model-path="/3dmodel/glasses-07/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0.3"
@@ -150,7 +150,7 @@
               </li>
             </ul>
           </div>
-          <img id="arrowRight" src="./public/images/arrow-right.png" />
+          <img id="arrowRight" src="/images/arrow-right.png" />
         </div>
       </div>
 
@@ -178,7 +178,7 @@
       </div>
       <div class="md-overlay"></div>
     </main>
-    <script type="module" src="./public/js/virtual-glasses.js"></script>
+    <script type="module" src="/js/virtual-glasses.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
