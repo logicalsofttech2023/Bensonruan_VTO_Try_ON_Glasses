@@ -4,37 +4,45 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>Virtual Glasses Try-On</title>
+
+    <!-- Bootstrap -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
+
+    <!-- Webcam Easy demo CSS -->
     <link
       rel="stylesheet"
       type="text/css"
       media="screen"
       href="https://unpkg.com/webcam-easy/demo/style/webcam-demo.css"
     />
+
+    <!-- Local custom CSS -->
     <link
       rel="stylesheet"
       type="text/css"
       media="screen"
       href="/style/virtual-glasses.css"
     />
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-core@2.4.0/dist/tf-core.min.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-converter@2.4.0/dist/tf-converter.min.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl@2.4.0/dist/tf-backend-webgl.min.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-backend-cpu@2.4.0/dist/tf-backend-cpu.min.js"></script>
     <script src="https://unpkg.com/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.min.js"></script>
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"
-    ></script>
+    <script src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
     <script type="text/javascript" src="/js/webcam-ui-lib.js"></script>
   </head>
   <body>
-    <!-- <div id="root"></div> -->
+    <!-- React root (तुम्हारा React app यहाँ mount होगा) -->
+    <div id="root"></div>
+
+    <!-- Virtual Glasses App -->
     <main id="virtual-glasses-app">
       <div class="form-control webcam-start" id="webcam-control">
         <label class="form-switch">
@@ -44,6 +52,7 @@
         </label>
         <button id="cameraFlip" class="btn d-none"></button>
       </div>
+
       <div id="image-container">
         <canvas id="canvas" width="640" height="480"></canvas>
         <div class="loading d-none">
@@ -53,6 +62,7 @@
           </div>
         </div>
 
+        <!-- Glasses Slider -->
         <div id="glasses-slider">
           <img id="arrowLeft" src="/images/arrow-left.png" />
           <div id="glasses-list">
@@ -61,7 +71,7 @@
                 <img
                   src="/3dmodel/glasses-01/glasses_01.png"
                   data-3d-type="gltf"
-                  data-3d-model-path="3dmodel/glasses-01/"
+                  data-3d-model-path="/3dmodel/glasses-01/"
                   data-3d-model="scene.gltf"
                   data-3d-x="0"
                   data-3d-y="0.5"
@@ -154,12 +164,15 @@
         </div>
       </div>
 
+      <!-- Error message -->
       <div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
-        Fail to start camera, please allow permision to access camera. <br />
+        Fail to start camera, please allow permission to access camera. <br />
         If you are browsing through social media built in browsers, you would
-        need to open the page in Sarafi (iPhone)/ Chrome (Android)
+        need to open the page in Safari (iPhone)/ Chrome (Android)
         <button id="closeError" class="btn btn-primary ml-3">OK</button>
       </div>
+
+      <!-- Webcam Modal -->
       <div class="md-modal md-effect-12">
         <div id="app-panel" class="app-panel md-content row p-0 m-0">
           <div
@@ -178,7 +191,8 @@
       </div>
       <div class="md-overlay"></div>
     </main>
+
+    <!-- Virtual Glasses script -->
     <script type="module" src="/js/virtual-glasses.js"></script>
-    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
