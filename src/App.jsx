@@ -1,16 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import VirtualGlasses from './components/VirtualGlasses';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-     App
-    </>
-  )
+    <div className="App">
+      <VirtualGlasses />
+    </div>
+  );
 }
 
-export default App
+export default App;
