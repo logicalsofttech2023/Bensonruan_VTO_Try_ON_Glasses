@@ -1,6 +1,5 @@
 import React from 'react';
 import VirtualGlasses from './components/VirtualGlasses';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 function App() {
